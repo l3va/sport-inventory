@@ -1,0 +1,16 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+    <form class="register-form" method="POST" action="">
+        {% csrf_token %}
+        <div class="register-row">
+            <p>Ім'я користувача</p>
+            <input type="text" name="username">
+        </div>
+        <div class="register-row">
+            <p>Пароль</p>
+            <input type="password" name="password">
+        </div>
+        <input type="submit" value="Зайти">
+    </form>
+{% endblock content %}

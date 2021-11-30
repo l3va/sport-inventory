@@ -2,10 +2,14 @@ import csv
 import json
 
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
+from .forms import CreateUserForm
 from .models import *
+
 
 # Create your views here.
 def store(request):
@@ -22,6 +26,7 @@ def store(request):
     context = {'products': products}
     return render(request, 'store/store.html', context)
 
+
 def cart(request):
     if request.user.is_authenticated:
         customer = request.user.customer
@@ -33,6 +38,7 @@ def cart(request):
 
     context = {'items': items, 'order': order}
     return render(request, 'store/cart.html', context)
+
 
 def checkout(request):
     if request.user.is_authenticated:
@@ -60,6 +66,7 @@ def export_products_csv(request):
 
     return response
 
+
 def updateItem(request):
     data = json.loads(request.body)
     productId = data['productId']
@@ -85,3 +92,38 @@ def updateItem(request):
         orderItem.delete()
 
     return JsonResponse('Item was added', safe=False)
+
+
+def registerPage(request):
+    form = CreateUserForm()
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+    context = {'form': form}
+    return render(request, 'store/register.html', context)
+
+
+def loginPage(request):
+    if request.user.is_authenticated:
+        return redirect('store')
+    else:
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+
+            user = authenticate(request, username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+                return redirect('store')
+            else:
+                messages.info(request, 'Username OR password is incorrect')
+
+        context = {}
+        return render(request, 'store/login.html', context)
+
+
+def logoutUser(request):
+    logout(request)
+    return redirect('login')

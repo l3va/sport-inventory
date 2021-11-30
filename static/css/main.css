@@ -94,6 +94,29 @@ h1,h2,h3,h4,h5,h6{
 }
 
 
-.hidden{
-	display: none!important;
+.hidden {
+	display: none !important;
+}
+
+.register-form {
+	display: flex;
+	flex-flow: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.register-form input{
+	width: 15rem;
+	height: 1.8rem;
+	margin-left: 0.5rem;
+}
+
+.register-form p{
+	width: 11rem;
+	text-align: right;
+}
+
+.register-form .register-row{
+	display: flex;
+	flex-flow: row;
 }
